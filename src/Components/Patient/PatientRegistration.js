@@ -1,10 +1,10 @@
 import React from "react";
-import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBContainer } from "mdbreact";
+import { MDBRow, MDBCol, MDBInput, MDBBtn } from "mdbreact";
 import PatientList from "./PatientList";
-class FormsPage extends React.Component {
+class PatientRegistration extends React.Component {
   state = {
-    fname: "Mark",
-    lname: "Otto",
+    fname: "",
+    lname: "",
     email: "",
     city: "",
     state: "",
@@ -54,89 +54,26 @@ class FormsPage extends React.Component {
                 id="materialFormRegisterNameEx"
                 label="First name"
                 required
-              >
-                <div className="valid-tooltip">Looks good!</div>
-              </MDBInput>
+              ></MDBInput>
             </MDBCol>
             <MDBCol md="4">
               <MDBInput
                 value={this.state.lname}
-                name="lname"
+                name="fname"
                 onChange={this.changeHandler}
                 type="text"
-                id="materialFormRegisterEmailEx2"
+                id="materialFormRegisterNameEx"
                 label="Last name"
                 required
-              >
-                <div className="valid-tooltip">Looks good!</div>
-              </MDBInput>
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={this.state.email}
-                onChange={this.changeHandler}
-                type="email"
-                id="materialFormRegisterConfirmEx3"
-                name="email"
-                label="Your Email address"
               ></MDBInput>
             </MDBCol>
-          </MDBRow>
-          <MDBRow>
-            <MDBCol md="4">
-              <MDBInput
-                value={this.state.city}
-                onChange={this.changeHandler}
-                type="text"
-                id="materialFormRegisterPasswordEx4"
-                name="city"
-                label="City"
-                required
-              >
-                <div className="invalid-tooltip">
-                  Please provide a valid city.
-                </div>
-                <div className="valid-tooltip">Looks good!</div>
-              </MDBInput>
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={this.state.state}
-                onChange={this.changeHandler}
-                type="text"
-                id="materialFormRegisterPasswordEx4"
-                name="state"
-                label="State"
-                required
-              >
-                <div className="invalid-tooltip">
-                  Please provide a valid state.
-                </div>
-                <div className="valid-tooltip">Looks good!</div>
-              </MDBInput>
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={this.state.zip}
-                onChange={this.changeHandler}
-                type="text"
-                id="materialFormRegisterPasswordEx4"
-                name="zip"
-                label="Zip"
-                required
-              >
-                <div className="invalid-tooltip">
-                  Please provide a valid zip.
-                </div>
-                <div className="valid-tooltip">Looks good!</div>
-              </MDBInput>
+            <MDBCol md="2">
+              <MDBBtn color="success" type="submit">
+                Submit Form
+              </MDBBtn>
             </MDBCol>
           </MDBRow>
-          <MDBRow></MDBRow>
-
-          <MDBBtn color="success" type="submit">
-            Submit Form
-          </MDBBtn>
+          <hr />
         </form>
         <PatientList />
       </div>
@@ -144,4 +81,4 @@ class FormsPage extends React.Component {
   }
 }
 
-export default FormsPage;
+export default PatientRegistration;
