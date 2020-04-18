@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+/*
+import FormPage from "./Components/FormRegister";
+import FormLogin from "./Components/FormLogin";
 
+import NavbarPage from "./Components/Common/NavbarPage";
+import PatientRegistration from "./Components/Patient/PatientRegistration";
+import FooterPage from "./Components/Common/FooterPage";
+
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "bootstrap-css-only/css/bootstrap.min.css";
+import "mdbreact/dist/css/mdb.css";
+<NavbarPage />
+        <PatientRegistration />
+        <FooterPage />
+*/
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Saleem</h1>
     </div>
   );
 }
