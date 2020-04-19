@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+
+import Alert from "@material-ui/lab/Alert";
+import Button from "@material-ui/core/Button";
 import { MDBRow, MDBCol, MDBInput, MDBBtn } from "mdbreact";
 import Helper from "../Common/Helper";
 import { InputHook } from "../Common/InputHook";
+import { useHistory } from "react-router-dom";
+import LinearProgress from "@material-ui/core/LinearProgress";
 const PatientRegistration = () => {
   const [Subject, setSubject] = useState([]);
+  const history = useHistory();
+
+  const [message, setMessage] = useState("");
   const {
     value: subjectCode,
     bind: bindSubjectCode,
@@ -23,8 +22,19 @@ const PatientRegistration = () => {
     bind: bindSubjectName,
     reset: resetSubjectName,
   } = InputHook("");
+  const [Loading, setLoading] = useState(false);
+  function Success(response) {
+    setMessage(response.message);
+    //history.push("/PatientList");
+  }
+  function Fail() {
+    setMessage("Record Not Created");
+    setLoading(false);
+  }
   const handleSubmit = (evt) => {
     evt.preventDefault();
+    setLoading(true);
+    setMessage("");
     fetch(Helper.getUrl() + "subject", {
       method: "POST",
       body: JSON.stringify({
@@ -36,10 +46,22 @@ const PatientRegistration = () => {
       },
     })
       .then((response) => response.json())
-      .then((json) => console.log(json));
+      .then((response) => {
+        setLoading(false);
+        response.message === "Subject successfully added"
+          ? Success(response)
+          : Fail();
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+        setMessage("Server Error.");
+        setLoading(false);
+      });
+
     resetSubjectCode();
     resetSubjectName();
-    window.location.reload(false);
+    //window.location.reload(false);
   };
 
   useEffect(() => {
@@ -53,22 +75,38 @@ const PatientRegistration = () => {
       }
     })();
   }, []);
-  function deleteSubject(id) {
-    fetch(Helper.getUrl() + "subject", {
-      method: "DELETE",
-      body: JSON.stringify({
-        subject_id: id,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then(() => window.location.reload(false));
+
+  let alert, button;
+  if (message === "") {
+  } else {
+    alert = (
+      <Alert variant="filled" severity="warning">
+        {message}
+      </Alert>
+    );
   }
-  function editSubject(singleSubject) {
-    // setSubjectName(singleSubject.subject_name);
-    console.log(singleSubject);
+  if (Loading) {
+    button = (
+      <div>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          disabled
+        >
+          Save
+        </Button>
+
+        <LinearProgress color="secondary" />
+      </div>
+    );
+  } else {
+    button = (
+      <Button type="submit" fullWidth variant="contained" color="primary">
+        Save
+      </Button>
+    );
   }
   return (
     <div style={{ padding: 30 }}>
@@ -94,47 +132,11 @@ const PatientRegistration = () => {
               {...bindSubjectName}
             ></MDBInput>
           </MDBCol>
-          <MDBCol md="2">
-            <MDBBtn color="success" type="submit">
-              SAVE
-            </MDBBtn>
-          </MDBCol>
+          <MDBCol md="2">{button}</MDBCol>
         </MDBRow>
         <hr />
+        {alert}
       </form>
-      <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Subject Code</TableCell>
-              <TableCell>Subject Name</TableCell>
-
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Subject.map((row) => (
-              <TableRow key={row.subject_name}>
-                <TableCell component="th" scope="row">
-                  {row.subject_code}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.subject_name}
-                </TableCell>
-
-                <TableCell component="th" scope="row">
-                  <EditIcon color="primary" onClick={() => editSubject(row)} />
-
-                  <DeleteIcon
-                    color="secondary"
-                    onClick={() => deleteSubject(row.subject_id)}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     </div>
   );
 };

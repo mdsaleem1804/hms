@@ -5,11 +5,10 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { useInput } from "./common/hooks/input-hook";
-import axios from "axios";
+import { InputHook } from "../Components/Common/InputHook";
 import Alert from "@material-ui/lab/Alert";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Helper from "./common/Helper";
+import Helper from "../Components/Common/Helper";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,15 +38,16 @@ export default function SignIn() {
   const [loginStatusErrorMessage, setLoginStatusErrorMessage] = useState("");
   const [Loading, setLoading] = useState(false);
 
-  const { value: email, bind: bindEmail, reset: resetEmail } = useInput("");
+  const { value: email, bind: bindEmail, reset: resetEmail } = InputHook("");
   const {
     value: password,
     bind: bindPassword,
     reset: resetPassword,
-  } = useInput("");
+  } = InputHook("");
   function loginSuccess(response) {
     localStorage.setItem("usertoken", response.data);
-    history.push("/Dashboard");
+    history.push("/PatientRegistration");
+    window.location.reload(false);
   }
   function loginFail() {
     setLoginStatusErrorMessage("Please check with your credentials");
@@ -57,14 +57,22 @@ export default function SignIn() {
     evt.preventDefault();
     setLoading(true);
     setLoginStatusErrorMessage("");
-    axios
-      .post(Helper.getUrl() + "read_login_details.php", {
+
+    fetch(Helper.getUrl() + "auth", {
+      method: "POST",
+      body: JSON.stringify({
         email: email,
         password: password,
-      })
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
       .then((response) => {
         setLoading(false);
-        response.data === "success" ? loginSuccess(response) : loginFail();
+        response.message === "success" ? loginSuccess(response) : loginFail();
+        console.log(response);
       })
       .catch((error) => {
         console.log(error);

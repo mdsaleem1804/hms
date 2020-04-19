@@ -17,7 +17,11 @@ class NavbarPage extends Component {
   toggleCollapse = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
-
+  logOut(e) {
+    e.preventDefault();
+    localStorage.clear();
+    window.location.href = "./#/";
+  }
   render() {
     return (
       <MDBNavbar color="default-color" dark expand="md">
@@ -26,22 +30,40 @@ class NavbarPage extends Component {
         </MDBNavbarBrand>
         <MDBNavbarToggler onClick={this.toggleCollapse} />
         <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
-          <MDBNavbarNav right>
-            <MDBNavItem active>
-              <MDBNavLink to="#!">
-                <MDBIcon fab icon="google-plus-g" />
-                Dashboard
-              </MDBNavLink>
-            </MDBNavItem>
-            <MDBNavItem>
-              <MDBNavLink to={"/PatientRegistration"}>
-                PatientRegistration
-              </MDBNavLink>
-            </MDBNavItem>
-            <MDBNavItem>
-              <MDBNavLink to={"/PatientList"}>PatientList</MDBNavLink>
-            </MDBNavItem>
-          </MDBNavbarNav>
+          {!localStorage.usertoken ? (
+            <MDBNavbarNav right>
+              <MDBNavItem>
+                <MDBNavLink to={"/SignIn"}>SignIn</MDBNavLink>
+              </MDBNavItem>
+            </MDBNavbarNav>
+          ) : (
+            <MDBNavbarNav right>
+              <MDBNavItem active>
+                <MDBNavLink to="#!">
+                  <MDBIcon icon="home" />
+                  Dashboard
+                </MDBNavLink>
+              </MDBNavItem>
+              <MDBNavItem>
+                <MDBNavLink to={"/PatientRegistration"}>
+                  <MDBIcon icon="user-plus" />
+                  PatientRegistration
+                </MDBNavLink>
+              </MDBNavItem>
+              <MDBNavItem>
+                <MDBNavLink to={"/PatientList"}>
+                  <MDBIcon icon="table" />
+                  PatientList
+                </MDBNavLink>
+              </MDBNavItem>
+              <MDBNavItem>
+                <MDBNavLink to={"/SignIn"} onClick={this.logOut.bind(this)}>
+                  <MDBIcon icon="sign-out-alt" />
+                  Logout
+                </MDBNavLink>
+              </MDBNavItem>
+            </MDBNavbarNav>
+          )}
         </MDBCollapse>
       </MDBNavbar>
     );

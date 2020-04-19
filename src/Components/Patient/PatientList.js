@@ -10,21 +10,27 @@ import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Helper from "../Common/Helper";
 import { MDBBtn } from "mdbreact";
+import EditIcon from "@material-ui/icons/Edit";
+
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 const DatatablePage = () => {
+  const [Loading, setLoading] = useState(false);
   const [Subject, setSubject] = useState([]);
   useEffect(() => {
+    setLoading(true);
     (async function () {
       try {
         const response = await fetch(Helper.getUrl() + "subject");
         const json = await response.json();
         setSubject(json.data);
+        setLoading(false);
       } catch (e) {
         console.error(e);
       }
     })();
   }, []);
   function deleteSubject(id) {
-    console.log(id);
     fetch(Helper.getUrl() + "subject", {
       method: "DELETE",
       body: JSON.stringify({
@@ -35,9 +41,16 @@ const DatatablePage = () => {
       },
     })
       .then((response) => response.json())
-      .then((json) => console.log(json));
+      .then(() => window.location.reload(false));
   }
-
+  function editSubject(singleSubject) {
+    // setSubjectName(singleSubject.subject_name);
+    console.log(singleSubject);
+  }
+  let loading;
+  if (Loading) {
+    loading = <CircularProgress disableShrink />;
+  }
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -48,6 +61,7 @@ const DatatablePage = () => {
 
             <TableCell>Action</TableCell>
           </TableRow>
+          {loading}
         </TableHead>
         <TableBody>
           {Subject.map((row) => (
@@ -60,15 +74,12 @@ const DatatablePage = () => {
               </TableCell>
 
               <TableCell component="th" scope="row">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
+                <EditIcon color="primary" onClick={() => editSubject(row)} />
+
+                <DeleteIcon
+                  color="secondary"
                   onClick={() => deleteSubject(row.subject_id)}
-                  startIcon={<DeleteIcon />}
-                >
-                  DELETE
-                </Button>
+                />
               </TableCell>
             </TableRow>
           ))}
